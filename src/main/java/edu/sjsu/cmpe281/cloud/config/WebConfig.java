@@ -3,6 +3,7 @@ package edu.sjsu.cmpe281.cloud.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -35,6 +36,14 @@ public class WebConfig extends WebMvcConfigurerAdapter {
         MappingJackson2JsonView view = new MappingJackson2JsonView();
         view.setPrettyPrint(true);
         return view;
+    }
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false).
+                favorParameter(true).
+                ignoreAcceptHeader(true).
+                useJaf(false);
     }
 
 }
