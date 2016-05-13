@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import edu.sjsu.cmpe281.cloud.enums.MongoCollection;
 import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
+import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -38,6 +39,17 @@ public class MongoCrudImpl implements IMongoCrud {
         BarometerSensor barometerSensorCollection = mongoOperations.findOne(new Query(Criteria.where("time")
                 .is(timeStamp)), BarometerSensor.class, collectionName);
         return barometerSensorCollection;
+    }
+
+    @Override
+    public List<VirtualSensor> getDataByTimestampRange(String startTime, String endTime, String collectionName){
+
+        Criteria startRange= Criteria.where("time").gte(startTime);
+        Criteria endRange= Criteria.where("time").lte(endTime);
+        Criteria rangeCriteria= new Criteria().andOperator(startRange,endRange);
+        Query query = new Query(rangeCriteria);
+
+        return mongoOperations.find(query,VirtualSensor.class,collectionName);
     }
 
     @Override
