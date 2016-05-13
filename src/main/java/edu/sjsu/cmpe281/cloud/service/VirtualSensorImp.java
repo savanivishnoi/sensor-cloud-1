@@ -40,4 +40,9 @@ public class VirtualSensorImp implements IVirtualSensor {
     public void storeInDB(JSONObject vsJsonObject) {
         vsDBOperations.storeInDB(vsJsonObject);
     }
+
+    @Override
+    public List<VirtualSensor> getAllSensors() {
+        return vsDBOperations.getAllSensors();
+    }
 }

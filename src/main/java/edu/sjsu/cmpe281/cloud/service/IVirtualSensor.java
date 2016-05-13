@@ -12,6 +12,8 @@ public interface IVirtualSensor {
 
     void storeInDB(JSONObject vsJsonObject);
 
+    List<VirtualSensor> getAllSensors();
+
     List<VirtualSensor> getSensorMetadata(String sensorId, String userId);
 
     List<VirtualSensor> groupVirtualSensorListByLatLong(String userId, String latitude, String longitude);

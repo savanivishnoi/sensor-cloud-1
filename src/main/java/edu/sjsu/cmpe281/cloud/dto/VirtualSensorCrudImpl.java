@@ -1,10 +1,7 @@
 package edu.sjsu.cmpe281.cloud.dto;
 
 import com.google.gson.Gson;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
+import com.mongodb.*;
 import edu.sjsu.cmpe281.cloud.enums.MongoCollection;
 import edu.sjsu.cmpe281.cloud.enums.SensorState;
 import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
@@ -49,9 +46,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             table.insert(document);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } /*finally {
-            dbClient.close();
-        }*/
+        }
     }
 
     @Override
@@ -83,9 +78,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
-        } /*finally {
-            dbClient.close();
-        }*/
+        }
     }
 
     @Override
@@ -118,9 +111,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
-        } /*finally {
-            dbClient.close();
-        }*/
+        }
     }
 
     @Override
@@ -153,9 +144,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return null;
-        } /*finally {
-            dbClient.close();
-        }*/
+        }
     }
 
     // call this method for soft delete in which the state of the virtual sensor is changed to stop
@@ -173,8 +162,32 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             table.update(searchQuery, newDocument);
         } catch (Exception e) {
             System.out.println(e.getMessage());
-        } /*finally {
-            dbClient.close();
-        }*/
+        }
+    }
+
+    @Override
+    public List<VirtualSensor> getAllSensors() {
+
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+
+             Gson gson = new Gson();
+        List<VirtualSensor> virtualSensorList = new ArrayList<>();
+
+        DBCursor dbCursor = null;
+
+        try {
+            // get all the sensors
+            dbCursor = table.find();
+
+            while (dbCursor.hasNext()) {
+                DBObject obj = dbCursor.next();
+                VirtualSensor vs = gson.fromJson(obj.toString(), VirtualSensor.class);
+                virtualSensorList.add(vs);
+            }
+            return virtualSensorList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
     }
 }

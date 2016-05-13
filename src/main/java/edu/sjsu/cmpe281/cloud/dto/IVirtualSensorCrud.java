@@ -11,6 +11,7 @@ import java.util.List;
 public interface IVirtualSensorCrud {
     void storeInDB(JSONObject virtualSensorData);
 
+    @Deprecated
     List<VirtualSensor> getVirtualSensorListByUserId(String sensorId, String userId);
 
     List<VirtualSensor> groupVirtualSensorListByLatLong(String userId, String latitude, String longitude);
@@ -18,4 +19,6 @@ public interface IVirtualSensorCrud {
     List<VirtualSensor> groupVirtualSensorListByTimeCreated(String userId, String timeCreated);
 
     void updateVirtualSensorStatus(String userId, String sensorId, String state);
+
+    List<VirtualSensor> getAllSensors();
 }
