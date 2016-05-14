@@ -1,4 +1,4 @@
-package edu.sjsu.cmpe281.cloud.crud;
+package edu.sjsu.cmpe281.cloud.dto;
 
 import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
 import org.json.JSONObject;
