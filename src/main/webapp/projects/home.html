@@ -1,0 +1,143 @@
+<div class="ng-scope">
+    <div id="divLoading">
+    </div>
+    <div class="row">
+        <style>
+            .navbar-right .nav .navbar-nav > li > a, .navbar-brand {
+                padding-top:4px !important;
+                padding-bottom:0 !important;
+                height: 40px;
+            }
+            .navbar-right .nav .navbar {min-height:72px !important;}
+            #panel {background-color:#FFD700; margin:auto; padding-bottom:40px}
+        </style>
+        <nav class="navbar navbar-default" style="background-color: #FFD700; height: 50px;;">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a></a>
+                    <a href="/"><img src="logo.png"></a>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="./signup" class="btn btn-danger" style="color: white"><span class="glyphicon glyphicon-off"></span></a></li>
+                    <li><a></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 sidebar">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <ul class="nav nav-sidebar">
+                            <li class="active"><a href="http://localhost:8080/CombinationGenerator/#/home">Sensors</a></li>
+                            <li><a href="http://localhost:8080/CombinationGenerator/#/home">Settings</a></li>
+                            <li><a href="http://localhost:8080/CombinationGenerator/#/home">Billing</a></li>
+                            <li><a href="http://localhost:8080/CombinationGenerator/#/home">About Us</a></li>
+                            <li><a href="http://localhost:8080/CombinationGenerator/#/home">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-9">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="wrap">
+                            <div class="loader"></div>
+                            <div class="loaderbefore"></div>
+                            <div class="circular"></div>
+                            <div class="circular another"></div>
+                            <div class="text">Loading</div>
+                        </div>
+                        <b style="color:grey"><h4>Sensor Dashboard</h4></b>
+                        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Create New Sensor</button>
+                        <!-- Modal -->
+                        <div id="myModal" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title">New Sensor</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="well">
+                                                    <form class="form-horizontal">
+                                                        <fieldset>
+                                                            <div class="form-group">
+                                                                <label for="sensorName" class="col-lg-2 control-label">Name&nbsp&nbsp&nbsp&nbsp</label>
+                                                                <div class="col-lg-10">
+                                                                    <input type="text" class="form-control" id="sensorName" placeholder="Sensor name">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="latitude" class="col-lg-2 control-label">Latitude</label>
+                                                                <div class="col-lg-10">
+                                                                    <input type="text" class="form-control" id="latitude" placeholder="Latitude">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="longitude" class="col-lg-2 control-label">Latitude</label>
+                                                                <div class="col-lg-10">
+                                                                    <input type="text" class="form-control" id="longitude" placeholder="Longitude">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group" align="center">
+                                                                <h5><b style="color: grey">or Select co-ordinates in Map</b></h5>
+                                                                <div id="googleMap2" style="width:500px;height:380px;"></div>
+                                                            </div>
+                                                        </fieldset>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-info">CREATE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <b style="color:grey"><h4>Sensor Dashboard</h4></b>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class = "info">
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Latitude</th>
+                                    <th>longitude</th>
+                                    <th>Status</th>
+                                    <th>Created Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class = "success">
+                                    <td>1</td>
+                                    <td><a ng-click="sensorPage()">San Jose</a></td>
+                                    <td>38.279</td>
+                                    <td>-128.315</td>
+                                    <td>active</td>
+                                    <td>15th April, 2016</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <b style="color:grey"><h4>Sensor Map</h4></b>
+                        <div id="googleMap" style="width:1100px;height:800px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
