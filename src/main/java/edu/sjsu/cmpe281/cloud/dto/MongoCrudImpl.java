@@ -7,7 +7,6 @@ import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import edu.sjsu.cmpe281.cloud.enums.MongoCollection;
 import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
-import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.slf4j.Logger;
@@ -35,21 +34,27 @@ public class MongoCrudImpl implements IMongoCrud {
     MongoOperations mongoOperations;
 
     @Override
-    public BarometerSensor getCollectionByTime(String timeStamp, String collectionName) {
-        BarometerSensor barometerSensorCollection = mongoOperations.findOne(new Query(Criteria.where("time")
-                .is(timeStamp)), BarometerSensor.class, collectionName);
-        return barometerSensorCollection;
-    }
+    public List<BarometerSensor> getDataByTimeRangeAndCoordinates(String startTime, String endTime, String latitude, String longitude) {
 
-    @Override
-    public List<VirtualSensor> getDataByTimestampRange(String startTime, String endTime, String collectionName){
+        Criteria range = (new Criteria()
+                .andOperator(
+                        Criteria.where("time").gte(startTime),
+                        Criteria.where("time").lte(endTime)
+                )
+        );
 
-        Criteria startRange= Criteria.where("time").gte(startTime);
-        Criteria endRange= Criteria.where("time").lte(endTime);
-        Criteria rangeCriteria= new Criteria().andOperator(startRange,endRange);
-        Query query = new Query(rangeCriteria);
+        Criteria coordinates = (new Criteria()
+                .andOperator(
+                        Criteria.where("latitude").is(latitude),
+                        Criteria.where("longitude").is(longitude)
+                )
+        );
 
-        return mongoOperations.find(query,VirtualSensor.class,collectionName);
+
+        Criteria resultantCriteria = new Criteria().andOperator(range, coordinates);
+        Query query = new Query(resultantCriteria);
+
+        return mongoOperations.find(query, BarometerSensor.class, MongoCollection.BarometerData.toString());
     }
 
     @Override
@@ -57,7 +62,7 @@ public class MongoCrudImpl implements IMongoCrud {
         JSONArray barometerReadingsArr = null;
         DBObject document;
         Object o;
-        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+        DBCollection table = mongoOperations.getCollection(MongoCollection.BarometerData.toString());
 
         try {
             barometerReadingsArr = new JSONArray(barometerReadings);
@@ -83,12 +88,11 @@ public class MongoCrudImpl implements IMongoCrud {
         JSONArray sensorReadings = new JSONArray();
         BasicDBObject nQuery = new BasicDBObject();
         List<BasicDBObject> ls_srch = new ArrayList<BasicDBObject>();
-        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+        DBCollection table = mongoOperations.getCollection(MongoCollection.BarometerData.toString());
         DBCursor cursor1 = null;
         try {
-            ////// TODO: 09-May-16 Remove the hard-coded latitude and longitude
-            ls_srch.add(new BasicDBObject("latitude", "40.9833333333333"));
-            ls_srch.add(new BasicDBObject("longitude", "-124.1"));
+            ls_srch.add(new BasicDBObject("latitude", latitude));
+            ls_srch.add(new BasicDBObject("longitude", longitude));
             nQuery.put("$and", ls_srch);
             cursor1 = table.find(nQuery);
             while (cursor1.hasNext()) {
@@ -104,7 +108,7 @@ public class MongoCrudImpl implements IMongoCrud {
     @Override
     public JSONArray searchAll() {
         JSONArray sensorReadings = new JSONArray();
-        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+        DBCollection table = mongoOperations.getCollection(MongoCollection.BarometerData.toString());
         DBCursor cursor = table.find();
         System.out.println("Total  :" + cursor.count());
         while (cursor.hasNext()) {

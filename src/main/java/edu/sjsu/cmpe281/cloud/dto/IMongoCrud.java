@@ -1,7 +1,6 @@
 package edu.sjsu.cmpe281.cloud.dto;
 
 import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
-import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
 import org.json.JSONArray;
 
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.List;
  * Crud Operations on MongDB -> mlab
  */
 public interface IMongoCrud {
-    BarometerSensor getCollectionByTime(String timeStamp, String collectionName);
 
     void updateDB(String barometerReadings);
 
@@ -19,5 +17,5 @@ public interface IMongoCrud {
 
     JSONArray searchAll();
 
-    List<VirtualSensor> getDataByTimestampRange(String startTime, String endTime, String collectionName);
+    List<BarometerSensor> getDataByTimeRangeAndCoordinates(String startTime, String endTime, String latitude, String longitude);
 }
