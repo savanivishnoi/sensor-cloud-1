@@ -75,7 +75,6 @@ public class CencoosConnectImpl implements ICencoosConnect {
         }
         Gson gson = new Gson();
         String json = gson.toJson(readings);
-        System.out.println(json);
 
         try {
             mongoService.updateDB(json);  //update DB
@@ -106,13 +105,13 @@ public class CencoosConnectImpl implements ICencoosConnect {
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     erdapURLConnection.getInputStream()));
             StringBuilder responseStrBuilder = new StringBuilder();
+            logger.info("reading barometric pressure data from erddap url...");
             while ((temp = br.readLine()) != null)
-                System.out.println(temp);
             responseStrBuilder.append(temp);
             erdapJSON = new JSONObject(responseStrBuilder.toString());
         } catch (Exception e) {
             logger.error("Exception : " + e.getMessage());
-            throw new ExceptionInInitializerError("Error while reading");
+            throw new ExceptionInInitializerError("Error while reading from url!");
         }
         ObjectMapper objMap = new ObjectMapper();
         objMap.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);

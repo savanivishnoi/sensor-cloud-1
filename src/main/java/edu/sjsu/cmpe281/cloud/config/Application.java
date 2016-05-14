@@ -1,10 +1,10 @@
 package edu.sjsu.cmpe281.cloud.config;
 
 
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * @author Nakul Sharma
@@ -14,8 +14,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ComponentScan(basePackages = "edu.sjsu.cmpe281.cloud")
 @EnableAutoConfiguration
+@EnableScheduling
 public class Application {
+
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+
+        FetchScheduler fetchScheduler=new FetchScheduler();
+        fetchScheduler.updateDatabasePeriodically();
+
     }
 }

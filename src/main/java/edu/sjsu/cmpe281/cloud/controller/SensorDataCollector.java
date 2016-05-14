@@ -3,7 +3,6 @@ package edu.sjsu.cmpe281.cloud.controller;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
 import edu.sjsu.cmpe281.cloud.service.ICencoosConnect;
 import edu.sjsu.cmpe281.cloud.service.IMongoService;
 import org.json.JSONArray;
@@ -76,16 +75,16 @@ public class SensorDataCollector {
         }
         return new ResponseEntity<>(sensorReadings.toString(), HttpStatus.OK);
     }
-
+/*
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity getReadingsByTimestamp(@RequestParam("timestamp") String timestamp) {
         try {
             //test with this timestamp -> 2016-03-11T00:00:00Z
-            BarometerSensor bs = mongoService.getBarometerSensorDataByTime(timestamp);
+            //BarometerSensor bs = mongoService.getBarometerSensorDataByTime(timestamp);
             return new ResponseEntity<>(bs, HttpStatus.OK);
         } catch (IllegalStateException e) {
             logger.error("IllegalStateExecption: "+e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }
+    }*/
 }
