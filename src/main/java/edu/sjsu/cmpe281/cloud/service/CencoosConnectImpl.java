@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.SystemEnvironmentPropertySource;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -42,6 +43,7 @@ public class CencoosConnectImpl implements ICencoosConnect {
     public boolean fetchData(String timestamp) {
         try {
             JSONArray barometerReadings = sensorDataRetrieve(timestamp); //retrive data from cencoos
+            System.out.println(timestamp + "...  timestamp");
             createJSONObject(barometerReadings); //create and save in DB
             return true;
         } catch (Exception e) {
@@ -58,20 +60,22 @@ public class CencoosConnectImpl implements ICencoosConnect {
      * @return JSON String
      */
     private String createJSONObject(JSONArray barometerReadings) {
-        String temp = null;
+        String row = null;
         String[] columns;
         ArrayList<BarometerSensor> readings = new ArrayList<BarometerSensor>();
+        int totalRows = barometerReadings.length();
+        System.out.println("Cencoos Total Rows Returned - " + totalRows);
         try {
-            temp = barometerReadings.get(0).toString();
+            for (int i = 0; i < totalRows; i++) {
+                row = barometerReadings.get(i).toString();
+                row = row.replace("[", "").replace("]", "").replace("\"", "");
+                columns = row.split(",");
+                BarometerSensor bs = new BarometerSensor(columns[0], columns[1],
+                    columns[2], columns[3], columns[4], columns[7], columns[5], columns[6]);
+                readings.add(bs);
+            }
         } catch (JSONException e) {
             logger.error("JSONException: " + e.getMessage());
-        }
-        for (int i = 0; i < 2; i++) {
-            temp = temp.replace("[", "").replace("]", "");
-            columns = temp.split(",");
-            BarometerSensor bs = new BarometerSensor(columns[0], columns[1],
-                    columns[2], columns[3], columns[4], columns[7], columns[5], columns[6]);
-            readings.add(bs);
         }
         Gson gson = new Gson();
         String json = gson.toJson(readings);

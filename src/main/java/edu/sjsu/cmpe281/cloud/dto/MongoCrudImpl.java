@@ -60,18 +60,34 @@ public class MongoCrudImpl implements IMongoCrud {
     @Override
     public void updateDB(String barometerReadings) {
         JSONArray barometerReadingsArr = null;
+        List<DBObject> documents= new ArrayList<>();
         DBObject document;
-        Object o;
+        int totalChunks = 0;
+        int remainingChunks = 0;
+        int chunkIter = 0;
         DBCollection table = mongoOperations.getCollection(MongoCollection.BarometerData.toString());
-
         try {
             barometerReadingsArr = new JSONArray(barometerReadings);
             logger.info("Updating Database... Please wait!");
-            for (int i = 0; i < barometerReadingsArr.length(); i++) {
-                o = com.mongodb.util.JSON.parse(barometerReadingsArr.get(i).toString());
-                document = (DBObject) o;
-                table.insert(document);
+            System.out.println("Adding " + barometerReadingsArr.length() + " entries to database");
+            totalChunks = barometerReadingsArr.length()/100;
+            remainingChunks = barometerReadingsArr.length()%100;
+            chunkIter = 0;
+            for(int j = 0; j< totalChunks; j++){
+                for (int i = 0; i < 100; i++) {
+                    documents.add((DBObject)com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
+                }
+                table.insert(documents);
+                documents.clear();
+                System.out.println("deleted ... " +documents.size());
             }
+            for(int i = 0; i < remainingChunks; i++){
+                documents.add((DBObject)com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
+            }
+            table.insert(documents);
+            documents.clear();
+
+            //table.insert(documents);
         } catch (JSONException e) {
             logger.error("JSONException: " + e.getMessage());
             throw new ExceptionInInitializerError("Error while database writing... " + e);
