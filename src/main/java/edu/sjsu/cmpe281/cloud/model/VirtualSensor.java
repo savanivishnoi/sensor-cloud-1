@@ -3,12 +3,13 @@ package edu.sjsu.cmpe281.cloud.model;
 import edu.sjsu.cmpe281.cloud.enums.SensorState;
 import org.springframework.data.annotation.Id;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by Yassaman
  */
-public class VirtualSensor {
+public class VirtualSensor implements Serializable{
 
     @Id
     private String id;

@@ -4,6 +4,8 @@ package edu.sjsu.cmpe281.cloud.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 /**
  * Created by Naks on 13-Apr-16.
  * POJO class for Barometer Sensors.
@@ -11,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 @Document(collection = "BarometerData")
-public class BarometerSensor {
+public class BarometerSensor implements Serializable{
 
     @Id
     private String id;
