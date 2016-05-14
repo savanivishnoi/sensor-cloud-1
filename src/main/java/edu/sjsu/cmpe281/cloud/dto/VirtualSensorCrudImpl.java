@@ -5,9 +5,11 @@ import com.mongodb.*;
 import edu.sjsu.cmpe281.cloud.enums.MongoCollection;
 import edu.sjsu.cmpe281.cloud.enums.SensorState;
 import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,6 +19,7 @@ import java.util.List;
  * Created by Yassaman
  */
 @SuppressWarnings("SpringJavaAutowiredMembersInspection")
+@Service
 public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
 
     @Autowired
@@ -25,18 +28,18 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
     @Override
     public void storeInDB(JSONObject virtualSensorData) {
 
+        // check if the document exists in the db by calling getVirtualSensor(String userId, String sensorId) before calling this method
+        System.out.println("*** VirtualSensorDBOperations: " + virtualSensorData.toString());
         DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
 
-        // should I check if the document exists in the collection first?
-        System.out.println("*** VirtualSensorDBOperations: " + virtualSensorData.toString());
         BasicDBObject document = new BasicDBObject();
 
         try {
             Date timeCreated = new Date(); // timecreated and timeupdated are the same at this point
 
             // a unique id is generated
-            document.put("sensorid", virtualSensorData.get("sensorid"));
             document.put("userid", virtualSensorData.get("userid"));
+            document.put("sensorid", virtualSensorData.get("sensorid"));
             document.put("latitude", virtualSensorData.get("latitude"));
             document.put("longitude", virtualSensorData.get("longitude"));
             document.put("timecreated", timeCreated.toString());
@@ -44,6 +47,150 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             document.put("state", SensorState.RUNNING.toString());
 
             table.insert(document);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public ObjectId createSensor(String userId, String sensorId, String latitude, String longitude) {
+
+        // check if the document exists in the db by calling getVirtualSensor(String userId, String sensorId) before calling this method
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+
+        // should I check if the document exists in the collection?
+        BasicDBObject document = new BasicDBObject();
+        ObjectId id= null;
+
+        try {
+            Date timeCreated = new Date(); // timecreated and timeupdated are the same at this point
+
+            // a unique id is generated
+            document.put("userid", userId);
+            document.put("sensorid", sensorId);
+            document.put("latitude", latitude);
+            document.put("longitude", longitude);
+            document.put("timecreated", timeCreated.toString());
+            document.put("timeupdated", timeCreated.toString());
+            document.put("state", SensorState.RUNNING.toString());
+
+            table.insert(document);
+            id = (ObjectId)document.get( "_id" );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return id;
+    }
+
+    @Override
+    public void updateVirtualSensor(VirtualSensor virtualSensorData) {
+        // check if the document exists in the db by calling getVirtualSensor(String userId, String sensorId) before calling this method
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+
+        BasicDBObject updateFields = new BasicDBObject();
+        BasicDBObject searchQuery = new BasicDBObject();
+        BasicDBObject setQuery = new BasicDBObject();
+
+        try {
+            searchQuery.append("userid", virtualSensorData.getUserid())
+                    .append("sensorid", virtualSensorData.getSensorid());
+
+            Date timeUpdated = new Date();
+
+            updateFields.append("userid", virtualSensorData.getUserid());
+            updateFields.append("sensorid", virtualSensorData.getSensorid());
+            updateFields.append("latitude", virtualSensorData.getLatitude());
+            updateFields.append("longitude", virtualSensorData.getLongitude());
+            updateFields.append("timecreated", virtualSensorData.getTimecreated());
+            updateFields.append("state", virtualSensorData.getState().toString());
+
+            // time updated is set to the current time
+            updateFields.append("timeupdated", timeUpdated.toString());
+
+            setQuery.append("$set", updateFields);
+            table.update(searchQuery, setQuery);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @Override
+    public VirtualSensor getVirtualSensor(String userId, String sensorId) {
+
+//        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+        /* Yassaman*/
+        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
+        DB db = mongoClient.getDB("cmpe281project");
+        DBCollection table = db.getCollection(MongoCollection.VirtualSensor.toString());
+        //////
+
+        BasicDBObject dbQuery = new BasicDBObject();
+        List<BasicDBObject> query_parameters = new ArrayList<>();
+        DBCursor dbCursor = null;
+        Gson gson= new Gson();
+        VirtualSensor virtualSensor= null;
+
+        try {
+
+            query_parameters.add(new BasicDBObject("userid", userId));
+            query_parameters.add(new BasicDBObject("sensorid", sensorId));
+            dbQuery.put("$and", query_parameters);
+
+            dbCursor= table.find(dbQuery);
+            while (dbCursor.hasNext()) {
+                DBObject obj = dbCursor.next();
+                virtualSensor =gson.fromJson(obj.toString(), VirtualSensor.class);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return virtualSensor;
+    }
+
+    @Override
+    public List<VirtualSensor> getVirtualSensorListByUserId(String userId) {
+
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+        Gson gson = new Gson();
+        List<VirtualSensor> virtualSensorList = new ArrayList<>();
+
+        BasicDBObject dbQuery = new BasicDBObject();
+        DBCursor dbCursor = null;
+
+        try {
+            dbQuery.put("userid", userId);
+            dbCursor = table.find(dbQuery);
+
+            while (dbCursor.hasNext()) {
+                DBObject obj = dbCursor.next();
+                VirtualSensor vs = gson.fromJson(obj.toString(), VirtualSensor.class);
+                virtualSensorList.add(vs);
+            }
+            return virtualSensorList;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public void deleteVirtualSensor(String userId, String sensorId) {
+
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+
+        BasicDBObject dbQuery = new BasicDBObject();
+        List<BasicDBObject> query_parameters = new ArrayList<>();
+
+        try {
+
+            query_parameters.add(new BasicDBObject("userid", userId));
+            query_parameters.add(new BasicDBObject("sensorid", sensorId));
+            dbQuery.put("$and", query_parameters);
+
+            table.remove(dbQuery);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
