@@ -96,12 +96,10 @@ public class CencoosConnectImpl implements ICencoosConnect {
     private JSONArray sensorDataRetrieve(String timestamp) {
         JSONObject erdapJSON = null;
         try {
-            //// TODO: 09-May-16 Remove the hard coded date from here and pass it through API
-            String date1 = "2016-04-28T00:00:00Z";
             String temp = null;
             String url = "http://erddap.axiomdatascience.com/erddap/tabledap/"
                     + "cencoos_sensor_service.json?time,latitude,longitude,"
-                    + "depth,station,unit,value,parameter&time>=" + date1 + "&parameter=%22"
+                    + "depth,station,unit,value,parameter&time>=" + timestamp + "&parameter=%22"
                     + "Barometric%20Pressure%22";
             URL erdapURL = new URL(url);
             URLConnection erdapURLConnection = erdapURL.openConnection();
