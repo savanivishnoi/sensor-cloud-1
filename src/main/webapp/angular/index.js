@@ -5,8 +5,8 @@ var sensorcloud = angular.module('sensorcloud', [ 'ngRoute' ]);
 
 sensorcloud.config([ '$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
     $routeProvider.when('/', {
-        templateUrl: 'projects/home.html',
-        controller: 'homeController'
+        templateUrl: 'projects/default.html',
+        controller: 'defaultController'
     }).when('/login', {
         templateUrl: 'projects/login.html',
         controller: 'loginController'
@@ -19,8 +19,10 @@ sensorcloud.config([ '$routeProvider', '$locationProvider', function($routeProvi
     }).when('/home/sensors', {
         templateUrl : 'projects/sensor.html',
         controller : 'sensorController'
+    }).otherwise({
+        redirectTo : '/'
     });
-    $locationProvider.html5Mode(true);
+    //$locationProvider.html5Mode(true);
 }
 ]);
 
@@ -241,13 +243,13 @@ sensorcloud.controller('defaultController', function($scope, $routeParams, $http
 
 sensorcloud.controller('loginController', function($scope, $routeParams, $http) {
     $scope.login = function() {
-        window.location = "./home";
+        window.location = "#/home";
     };
 });
 
 sensorcloud.controller('signupController', function($scope, $routeParams, $http) {
     $scope.signup = function() {
-        window.location.href = "/home";
+        window.location = "#/home";
     };
 });
 
