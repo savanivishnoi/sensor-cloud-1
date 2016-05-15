@@ -254,20 +254,26 @@ sensorcloud.controller('signupController', function($scope, $routeParams, $http)
 });
 
 sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
-    var amsterdam1=new google.maps.LatLng(40.293210, -121.939071);
-    var amsterdam2=new google.maps.LatLng(36.8502863, -119.8259927);
-    var amsterdam3=new google.maps.LatLng(33.7648594, -116.1897527);
-    function initialize()
-    {
+    console.log("***** controller");
+     var amsterdam1=new google.maps.LatLng(40.293210, -121.939071);
+     var amsterdam2=new google.maps.LatLng(36.8502863, -119.8259927);
+     var amsterdam3=new google.maps.LatLng(33.7648594, -116.1897527);
+
+    var mapDiv = document.getElementById("googleMap");
+
+    // function initialize()
+    // {
+    //     console.log("***** initialize");
         var mapProp = {
             center:amsterdam2,
             zoom:5,
+            zoomControl: true,
             mapTypeId:google.maps.MapTypeId.ROADMAP
         };
-
-        var map = new google.maps.Map(document.getElementById("googleMap2"),mapProp);
+        var map = new google.maps.Map(mapDiv,mapProp);
 
         var myCity1 = new google.maps.Circle({
+            map: map,
             center:amsterdam1,
             radius:210000,
             strokeColor:"#0000FF",
@@ -278,6 +284,7 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         });
 
         var myCity2 = new google.maps.Circle({
+            map: map,
             center:amsterdam2,
             radius:240000,
             strokeColor:"#0000FF",
@@ -288,6 +295,7 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         });
 
         var myCity3 = new google.maps.Circle({
+            map: map,
             center:amsterdam3,
             radius:270000,
             strokeColor:"#0000FF",
@@ -297,12 +305,31 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
             fillOpacity:0.4
         });
 
-        myCity1.setMap(map);
-        myCity2.setMap(map);
-        myCity3.setMap(map);
-    }
+    var marker = new google.maps.Marker({
+        map: map,
+        draggable: true,
+        animation: google.maps.Animation.DROP,
+        // position: myLatLng
+    });
 
-    google.maps.event.addDomListener(window, 'load', initialize);
+    google.maps.event.addListener(myCity1, 'click', function (event) {
+        marker.setPosition(event.latLng);
+    });
+
+    google.maps.event.addListener(myCity2, 'click', function (event) {
+        marker.setPosition(event.latLng);
+    });
+
+    google.maps.event.addListener(myCity3, 'click', function (event) {
+        marker.setPosition(event.latLng);
+    });
+
+    // TODO - add the functionality for drag events
+    google.maps.event.addListener(marker, 'dragend', function () {});
+
+    // }
+
+    // google.maps.event.addaddDomListener(mapDiv, 'load', initialize);
 });
 
 sensorcloud.controller('sensorController', function($scope, $routeParams, $http) {
