@@ -13,12 +13,12 @@ public class VirtualSensor implements Serializable{
 
     @Id
     private String id;
-    private String name;
-    private String userId;
+    private String sensorid;
+    private String userid;
     private String latitude;
     private String longitude;
-    private String timeCreated;
-    private String timeUpdated;
+    private String timecreated;
+    private String timeupdated;
     private SensorState state;
     // For now there's only one type. Add an attribute for type later
 
@@ -32,12 +32,12 @@ public class VirtualSensor implements Serializable{
         Date currentDate = new Date();
 
         this.id = id;
-        this.name = name;
-        this.userId = userId;
+        this.sensorid = name;
+        this.userid = userId;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.timeCreated = currentDate.toString();
-        this.timeUpdated = currentDate.toString();
+        this.timecreated = currentDate.toString();
+        this.timeupdated = currentDate.toString();
         this.state = SensorState.RUNNING;
     }
 
@@ -45,12 +45,12 @@ public class VirtualSensor implements Serializable{
                          String timeUpdated, SensorState state) {
         super();
         this.id = id;
-        this.name = name;
-        this.userId = userId;
+        this.sensorid = name;
+        this.userid = userId;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.timeCreated = timeCreated;
-        this.timeUpdated = timeUpdated;
+        this.timecreated = timeCreated;
+        this.timeupdated = timeUpdated;
         this.state = state;
     }
 
@@ -62,20 +62,20 @@ public class VirtualSensor implements Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getSensorid() {
+        return sensorid;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSensorid(String sensorid) {
+        this.sensorid = sensorid;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUserid() {
+        return userid;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserid(String userid) {
+        this.userid = userid;
     }
 
     public String getLatitude() {
@@ -94,20 +94,20 @@ public class VirtualSensor implements Serializable{
         this.longitude = longitude;
     }
 
-    public String getTimeCreated() {
-        return timeCreated;
+    public String getTimecreated() {
+        return timecreated;
     }
 
-    public void setTimeCreated(String timeCreated) {
-        this.timeCreated = timeCreated;
+    public void setTimecreated(String timecreated) {
+        this.timecreated = timecreated;
     }
 
-    public String getTimeUpdated() {
-        return timeUpdated;
+    public String getTimeupdated() {
+        return timeupdated;
     }
 
-    public void setTimeUpdated(String timeUpdated) {
-        this.timeUpdated = timeUpdated;
+    public void setTimeupdated(String timeupdated) {
+        this.timeupdated = timeupdated;
     }
 
     public SensorState getState() {
@@ -120,8 +120,8 @@ public class VirtualSensor implements Serializable{
 
     public String toString() {
 
-        return "VirtualSensor [ id=" + id + ", name= " + name + ", userId= " + userId + ", latitude= " + latitude +
-                ", longitude= " + longitude + ", timeCreated= " + timeCreated + ", timeUpdated= " + timeUpdated +
+        return "VirtualSensor [ id=" + id + ", sensorid= " + sensorid + ", userid= " + userid + ", latitude= " + latitude +
+                ", longitude= " + longitude + ", timecreated= " + timecreated + ", timeupdated= " + timeupdated +
                 ", state= " + state.toString() + "]";
     }
 }
