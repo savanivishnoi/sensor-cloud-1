@@ -301,7 +301,7 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
      var amsterdam2=new google.maps.LatLng(36.8502863, -119.8259927);
      var amsterdam3=new google.maps.LatLng(33.7648594, -116.1897527);
 
-    var mapDiv = document.getElementById("googleMap");
+    var mapDiv = document.getElementById("googleMap2");
 
     // function initialize()
     // {
