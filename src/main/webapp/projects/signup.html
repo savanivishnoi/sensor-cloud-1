@@ -26,36 +26,161 @@
                 <div class="panel panel-default">
                     <div class="panel-body">
                         <h4 align="center">Signup to Join us</h4>
+                        <div ng-hide="spinner" class="wrap">
+                            <div class="loader"></div>
+                            <div class="loaderbefore"></div>
+                            <div class="circular"></div>
+                            <div class="circular another"></div>
+                            <div class="text">Loading</div>
+                        </div>
                         <form class="form-horizontal">
                             <fieldset>
                                 <div class="form-group">
-                                    <label for="firstName" class="col-lg-2 control-label">FIRST NAME</label>
-                                    <div class="col-lg-10">
-                                        <input type="text" class="form-control" id="firstName" placeholder="First Name">
+                                    <div class="row">
+                                        <label for="firstName" class="col-lg-3 control-label">FIRST NAME</label>
+                                        <div class="col-lg-8">
+                                            <input type="text" ng-model="formData.first_name" class="form-control" id="firstName" placeholder="First Name">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="lastName" class="col-lg-2 control-label">LAST NAME</label>
-                                    <div class="col-lg-10">
-                                        <input type="text" class="form-control" id="lastName" placeholder="Last Name">
+                                    <div class="row">
+                                        <label for="lastName" class="col-lg-3 control-label">LAST NAME</label>
+                                        <div class="col-lg-8">
+                                            <input type="text"  ng-model="formData.last_name" class="form-control" id="lastName" placeholder="Last Name">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputEmail" class="col-lg-2 control-label">EMAIL&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
-                                    <div class="col-lg-10">
-                                        <input type="text" class="form-control" id="inputEmail" placeholder="Email">
+                                    <div class="row">
+                                        <label for="inputEmail" class="col-lg-3 control-label">EMAIL&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</label>
+                                        <div class="col-lg-8">
+                                            <input type="text"  ng-model="formData.email" class="form-control" id="inputEmail" placeholder="Email">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="inputPassword" class="col-lg-2 control-label">PASSWORD</label>
-                                    <div class="col-lg-10">
-                                        <input type="password" class="form-control" id="inputPassword" placeholder="Password">
+                                    <div class="row">
+                                        <label for="inputPassword" class="col-lg-3 control-label">PASSWORD</label>
+                                        <div class="col-lg-8">
+                                            <input type="password"  ng-model="formData.password" class="form-control" id="inputPassword" placeholder="Password">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <div class="col-lg-10 col-lg-offset-2">
-                                        <button type="reset" class="btn btn-danger">Cancel</button>
+                                    <div class="row">
+                                        <label for="security" class="col-lg-3 control-label">SOCIAL SECURITY NO.</label>
+                                        <div class="col-lg-8">
+                                            <input type="text"  ng-model="formData.ssn" class="form-control" id="security" placeholder="eg: 999-99-9999">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="credit_card" class="col-lg-3 control-label">CREDIT CARD</label>
+                                        <div class="col-lg-8">
+                                            <input type="text"  ng-model="formData.credit_card" class="form-control" id="credit_card" placeholder="eg: 1234-1234-9999-9999">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="cvv" class="col-lg-3 control-label">CVV</label>
+                                        <div class="col-lg-8">
+                                            <input type="number"  ng-model="formData.cvv" min="0" max="999" class="form-control" id="cvv" placeholder="eg: 999">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="month" class="col-lg-3 control-label">MONTH</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" id="month" ng-model="formData.credit_card_month">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                                <option>6</option>
+                                                <option>7</option>
+                                                <option>8</option>
+                                                <option>9</option>
+                                                <option>10</option>
+                                                <option>11</option>
+                                                <option>12</option>
+                                            </select>
+                                        </div>
+                                        <label for="year" class="col-lg-1 control-label">YEAR</label>
+                                        <div class="col-lg-3">
+                                            <select class="form-control" id="year" ng-model="formData.credit_card_year">
+                                                <option>2016</option>
+                                                <option>2017</option>
+                                                <option>2018</option>
+                                                <option>2019</option>
+                                                <option>2020</option>
+                                                <option>2021</option>
+                                                <option>2022</option>
+                                                <option>2023</option>
+                                                <option>2024</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address" class="col-lg-3 control-label">BILLING ADDRESS</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" ng-model="formData.billing_address" class="form-control" id="address" placeholder="eg: 1334 The Alameda">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="city" class="col-lg-3 control-label">CITY</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" ng-model="formData.city" class="form-control" id="city" placeholder="eg: San Jose">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="state" class="col-lg-3 control-label">STATE</label>
+                                    <div class="col-lg-9">
+                                        <input type="text" ng-model="formData.state" class="form-control" id="state" placeholder="eg: California">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipcode" class="col-lg-3 control-label">ZIPCODE</label>
+                                    <div class="col-lg-9">
+                                        <input type="number" ng-model="formData.zipcode" class="form-control" id="zipcode" placeholder="eg: 95126">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-4">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <button type="reset" class="btn btn-danger form-conmtrol">Cancel</button>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <button ng-click="signup()" class="btn btn-success">Sign Up</button>
+                                    </div>
+                                </div>
+                                <!-- Modal -->
+                                <div id="myModal" class="modal fade" role="dialog">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                                <h4 class="modal-title">Signup Failure</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <div class="well">
+                                                            <mark>{{errmsg}}</mark>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </fieldset>

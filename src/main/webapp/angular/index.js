@@ -242,14 +242,56 @@ sensorcloud.controller('defaultController', function($scope, $routeParams, $http
 });
 
 sensorcloud.controller('loginController', function($scope, $routeParams, $http) {
+    $scope.formData = {};
+    $scope.spinner = true;
     $scope.login = function() {
-        window.location = "#/home";
+        $scope.spinner = false;
+        $http({
+            method : 'POST',
+            url : '/api/login',
+            data : $.param($scope.formData),
+            headers : {
+                'Content-Type' : 'application/x-www-form-urlencoded'
+            }
+        }).success(function(data) {
+            console.log(data);
+            $scope.spinner = true;
+            if(data.status === 200) {
+                window.location = "#/home";
+            }
+            else {
+                $scope.spinner = true;
+                $scope.errmsg = data.message;
+                $("#myModal").modal();
+            }
+        });
     };
 });
 
 sensorcloud.controller('signupController', function($scope, $routeParams, $http) {
+    $scope.formData = {};
+    $scope.spinner = true;
     $scope.signup = function() {
-        window.location = "#/home";
+        $scope.spinner = false;
+        $http({
+            method : 'POST',
+            url : '/api/register',
+            data : $.param($scope.formData),
+            headers : {
+                'Content-Type' : 'application/x-www-form-urlencoded'
+            }
+        }).success(function(data) {
+            console.log(data);
+            $scope.spinner = true;
+            if(data.status == 201) {
+                window.location = "#/login";
+            }
+            else {
+                $scope.spinner = true;
+                $scope.errmsg = data.message;
+                $("#myModal").modal();
+            }
+        });
     };
 });
 

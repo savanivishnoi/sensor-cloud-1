@@ -116,13 +116,13 @@ public class UserController {
             JSONObject responseObject = new JSONObject();
             responseObject.put("status", 401);
             responseObject.put("message", "Error: Login failure\n" + ide.getMessage());
-            return new ResponseEntity<>(responseObject.toString(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
         }
         catch(Exception e) {
             JSONObject responseObject = new JSONObject();
             responseObject.put("status", 401);
             responseObject.put("message", "Error: Login failure\n" + e.getMessage());
-            return new ResponseEntity<>(responseObject.toString(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
         }
     }
 
