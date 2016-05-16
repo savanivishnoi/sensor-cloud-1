@@ -314,6 +314,10 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         };
         var map = new google.maps.Map(mapDiv,mapProp);
 
+    $("#myModal").on("shown.bs.modal", function () {
+        google.maps.event.trigger(map, "resize");
+    });
+
         var myCity1 = new google.maps.Circle({
             map: map,
             center:amsterdam1,
