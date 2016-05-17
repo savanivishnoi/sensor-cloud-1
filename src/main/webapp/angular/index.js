@@ -541,83 +541,110 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
 });
 
 sensorcloud.controller('sensorController', function($scope, $routeParams, $http) {
-    var chartData = generateChartData();
-
-    var chart = AmCharts.makeChart("chartdiv", {
-        "type": "serial",
-        "theme": "light",
-        "marginRight": 80,
-        "dataProvider": chartData,
-        "valueAxes": [{
-            "position": "left",
-            "title": "Unique visitors"
-        }],
-        "graphs": [{
-            "id": "g1",
-            "fillAlphas": 0.4,
-            "valueField": "visits",
-            "balloonText": "<div style='margin:5px; font-size:19px;'>Visits:<b>[[value]]</b></div>"
-        }],
-        "chartScrollbar": {
-            "graph": "g1",
-            "scrollbarHeight": 80,
-            "backgroundAlpha": 0,
-            "selectedBackgroundAlpha": 0.1,
-            "selectedBackgroundColor": "#888888",
-            "graphFillAlpha": 0,
-            "graphLineAlpha": 0.5,
-            "selectedGraphFillAlpha": 0,
-            "selectedGraphLineAlpha": 1,
-            "autoGridCount": true,
-            "color": "#AAAAAA"
-        },
-        "chartCursor": {
-            "categoryBalloonDateFormat": "JJ:NN, DD MMMM",
-            "cursorPosition": "mouse"
-        },
-        "categoryField": "date",
-        "categoryAxis": {
-            "minPeriod": "mm",
-            "parseDates": true
-        },
-        "export": {
-            "enabled": true,
-            "dateFormat": "YYYY-MM-DD HH:NN:SS"
-        }
+    var userProfileResponse = $http.get('/api/profile');
+    userProfileResponse.success(function(profile) {
+        console.log(profile);
+        $scope.profile = profile;
     });
-
-    chart.addListener("dataUpdated", zoomChart);
-// when we apply theme, the dataUpdated event is fired even before we add listener, so
-// we need to call zoomChart here
-    zoomChart();
-// this method is called when chart is first inited as we listen for "dataUpdated" event
-    function zoomChart() {
-        // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
-        chart.zoomToIndexes(chartData.length - 250, chartData.length - 100);
-    }
-
-// generate some random data, quite different range
-    function generateChartData() {
-        var chartData = [];
-        // current date
-        var firstDate = new Date();
-        // now set 500 minutes back
-        firstDate.setMinutes(firstDate.getDate() - 1000);
-
-        // and generate 500 data items
-        for (var i = 0; i < 500; i++) {
+    
+    $scope.logout = function() {
+        var logoutResponse = $http.get('/api/logout');
+        logoutResponse.success(function(data) {
+            if(data.status == 200) {
+                window.location = "#/login";
+            }
+        });
+    };
+    
+    $scope.fetchData = function() {
+        var time1 = new Date($scope.time1);
+        var time2 = new Date($scope.time2);
+        function generateChartData() {
+            var chartData = [];
+            var firstDate = new Date($scope.time1);
+            firstDate.setMinutes(firstDate.getDate() - 1000);
+            var diff = time2 - time1;
+            var max = 1100;
+            var min = 940;
+            console.log((diff/(60*60*1000))*4);
             var newDate = new Date(firstDate);
-            // each time we add one minute
-            newDate.setMinutes(newDate.getMinutes() + i);
-            // some random number
-            var visits = Math.round(Math.random() * 40 + 10 + i + Math.random() * i / 5);
-            // add data item to the array
-            chartData.push({
-                date: newDate,
-                visits: visits
-            });
+            for (var i = 0; i < (diff/(60*60*1000))*4; i++) {
+                // each time we add one minute
+                var tempDate = new Date(newDate.getTime() + 15*60000)
+                // some random number
+                var value = Math.round(Math.random() * (max - min) + min);
+                // add data item to the array
+                chartData.push({
+                    date: tempDate,
+                    value: value
+                });
+                newDate = tempDate;
+            }
+            console.log(chartData);
+            return chartData;
         }
-        return chartData;
-    }
+        var chartData = generateChartData();
+        var dataResponse = $http.get('/api/sensor/' + $scope.profile.userid + '/' + $routeParams.sensorid + '/data?time1=' + time1 + '&time2='+ time2);
+        dataResponse.success(function(data) {
+
+            for(var index = 0; index < data.length; index++) {
+                var temp = {};
+                temp.date = new Date(data[index].time);
+                temp.value = data[index].value;
+                chartData.push(temp);
+            }
+            var chart = AmCharts.makeChart("chartdiv", {
+                "type": "serial",
+                "theme": "light",
+                "marginRight": 80,
+                "dataProvider": chartData,
+                "valueAxes": [{
+                    "position": "left",
+                    "title": "Atmosphere in millibars:"
+                }],
+                "graphs": [{
+                    "id": "g1",
+                    "fillAlphas": 0.4,
+                    "valueField": "value",
+                    "balloonText": "<div style='margin:5px; font-size:19px;'>Atmosphere in millibars:<b>[[value]]</b></div>"
+                }],
+                "chartScrollbar": {
+                    "graph": "g1",
+                    "scrollbarHeight": 80,
+                    "backgroundAlpha": 0,
+                    "selectedBackgroundAlpha": 0.1,
+                    "selectedBackgroundColor": "#888888",
+                    "graphFillAlpha": 0,
+                    "graphLineAlpha": 0.5,
+                    "selectedGraphFillAlpha": 0,
+                    "selectedGraphLineAlpha": 1,
+                    "autoGridCount": true,
+                    "color": "#AAAAAA"
+                },
+                "chartCursor": {
+                    "categoryBalloonDateFormat": "JJ:NN, DD MMMM",
+                    "cursorPosition": "mouse"
+                },
+                "categoryField": "date",
+                "categoryAxis": {
+                    "minPeriod": "mm",
+                    "parseDates": true
+                },
+                "export": {
+                    "enabled": true,
+                    "dateFormat": "YYYY-MM-DD HH:NN:SS"
+                }
+            });
+            chart.addListener("dataUpdated", zoomChart);
+                // when we apply theme, the dataUpdated event is fired even before we add listener, so
+                // we need to call zoomChart here
+            zoomChart();
+                // this method is called when chart is first inited as we listen for "dataUpdated" event
+            function zoomChart() {
+                // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+                chart.zoomToIndexes(chartData.length - 250, chartData.length - 100);
+            }
+        });
+    };
 });
 

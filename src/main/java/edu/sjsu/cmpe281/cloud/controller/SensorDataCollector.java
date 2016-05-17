@@ -1,5 +1,6 @@
 package edu.sjsu.cmpe281.cloud.controller;
 
+import com.google.gson.Gson;
 import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
 import edu.sjsu.cmpe281.cloud.service.IMongoService;
 import org.json.JSONObject;
@@ -27,7 +28,6 @@ public class SensorDataCollector {
     @Autowired
     IMongoService mongoService;
 
-
     /**
      * Fetch data from mongo db database
      *
@@ -52,7 +52,7 @@ public class SensorDataCollector {
             logger.error("Exception: " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(sensorList.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(sensorList, HttpStatus.OK);
     }
 
     /**

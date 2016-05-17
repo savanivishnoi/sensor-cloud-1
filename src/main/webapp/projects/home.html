@@ -123,10 +123,10 @@
                                 <tbody>
                                 <tr class = "success" ng-repeat="sensor in sensors">
                                     <td>{{$index + 1}}</td>
-                                    <td><a href="/home/sensor/{{sensor.id}}">{{sensor.userid}}</a></td>
+                                    <td><a href="#/home/sensors/{{sensor.id}}">{{sensor.name}}</a></td>
                                     <td>{{sensor.latitude}}</td>
                                     <td>{{sensor.longitude}}</td>
-                                    <td>{{sensor.state}}</td>
+                                    <td class="text-success">{{sensor.state}}</td>
                                     <td>{{sensor.timecreated}}</td>
                                 </tr>
                                 </tbody>
