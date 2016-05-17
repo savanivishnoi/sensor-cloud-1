@@ -13,9 +13,12 @@ public interface IMongoService {
 
     boolean updateDB(String barometerReadings);
 
-    List<BarometerSensor> listSensorData(String startTime, String endTime, String latitude, String longitude);
+    List<BarometerSensor> listSensorData(String userId, String sensorId, String startTime, String endTime);
 
+    @Deprecated
     JSONArray search(String latitude, String longitude);
+
+    boolean checkSensors(String latitude, String longitude);
 
     @Deprecated
     JSONArray searchAll();

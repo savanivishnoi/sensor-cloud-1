@@ -84,10 +84,25 @@ public class UserController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String showLogin(User user, HttpServletRequest request) {
-        session = request.getSession();
-        logger.info("Redirecting to " + request.getRequestURL());
-        return "login";
+    public String showLogin(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return "401";
+        }
+        else {
+            return session.getAttribute("userid").toString();
+        }
+    }
+
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
+    public String getMyProfile(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if(session == null) {
+            return "401";
+        }
+        else {
+            return session.getAttribute("profile").toString();
+        }
     }
 
     /**
@@ -104,8 +119,9 @@ public class UserController {
                     HttpServletRequest request) throws JSONException{
         try {
             User_profiles user_profiles = iUserService.doLogin(email, password);
-            //HttpSession httpSession = new request.getSession(false);
-            //httpSession.setAttribute("profile", user_profiles.toString());
+            HttpSession httpSession = request.getSession(true);
+            httpSession.setAttribute("userid", user_profiles.getUserid());
+            httpSession.setAttribute("profile", gson.toJson(user_profiles));
             JSONObject responseObject = new JSONObject();
             responseObject.put("status", 200);
             responseObject.put("message", "Login Successfull!!!");
@@ -113,12 +129,14 @@ public class UserController {
             return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
         }
         catch(InvalidDetailsException ide) {
+            System.out.println("ide: " + ide.getErrmsg());
             JSONObject responseObject = new JSONObject();
             responseObject.put("status", 401);
             responseObject.put("message", "Error: Login failure\n" + ide.getMessage());
             return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
         }
         catch(Exception e) {
+            System.out.println("e: " + e.getMessage());
             JSONObject responseObject = new JSONObject();
             responseObject.put("status", 401);
             responseObject.put("message", "Error: Login failure\n" + e.getMessage());

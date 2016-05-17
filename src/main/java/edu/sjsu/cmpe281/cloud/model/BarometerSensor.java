@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe281.cloud.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -39,6 +40,7 @@ public class BarometerSensor implements Serializable{
         this.coordinate = latitude + "," + longitude;
     }
 
+
     public String getTime() {
         return time;
     }
@@ -47,6 +49,7 @@ public class BarometerSensor implements Serializable{
         this.time = time;
     }
 
+    @JsonIgnore
     public String getLatitude() {
         return latitude;
     }
@@ -55,6 +58,7 @@ public class BarometerSensor implements Serializable{
         this.latitude = latitude;
     }
 
+    @JsonIgnore
     public String getLongitude() {
         return longitude;
     }
@@ -63,6 +67,7 @@ public class BarometerSensor implements Serializable{
         this.longitude = longitude;
     }
 
+    @JsonIgnore
     public String getDepth() {
         return depth;
     }
@@ -71,6 +76,7 @@ public class BarometerSensor implements Serializable{
         this.depth = depth;
     }
 
+    @JsonIgnore
     public String getStation() {
         return station;
     }
@@ -79,6 +85,7 @@ public class BarometerSensor implements Serializable{
         this.station = station;
     }
 
+    @JsonIgnore
     public String getParameter() {
         return parameter;
     }
@@ -87,6 +94,7 @@ public class BarometerSensor implements Serializable{
         this.parameter = parameter;
     }
 
+    @JsonIgnore
     public String getUnit() {
         return unit;
     }
@@ -103,6 +111,7 @@ public class BarometerSensor implements Serializable{
         this.value = value;
     }
 
+    @JsonIgnore
     public String getId() {
         return id;
     }
@@ -111,6 +120,7 @@ public class BarometerSensor implements Serializable{
         this.id = id;
     }
 
+    @JsonIgnore
     public String getCoordinate() {
         return coordinate;
     }
