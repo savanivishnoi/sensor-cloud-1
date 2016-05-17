@@ -124,7 +124,7 @@ public class SensorDataCollector {
             Date date1 = formatter.parse(timeCreated);
             Date date2 = formatter.parse(timeUpdated);
             diff = date2.getTime() - date1.getTime();
-                jsonObject.put("sensorid", virtualSensorsList.get(i).getSensorid());
+                jsonObject.put("sensorid", virtualSensorsList.get(i).getId());
                 jsonObject.put("totaltime", diff);
             }
             responseObject.put(jsonObject);
