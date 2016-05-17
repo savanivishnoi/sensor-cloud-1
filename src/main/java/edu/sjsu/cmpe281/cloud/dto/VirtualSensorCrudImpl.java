@@ -40,6 +40,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             // a unique id is generated
             document.put("userid", virtualSensorData.get("userid"));
             document.put("sensorid", virtualSensorData.get("sensorid"));
+            document.put("name", virtualSensorData.get("name"));
             document.put("latitude", virtualSensorData.get("latitude"));
             document.put("longitude", virtualSensorData.get("longitude"));
             document.put("timecreated", timeCreated.toString());
@@ -53,7 +54,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
     }
 
     @Override
-    public ObjectId createSensor(String userId, String sensorId, String latitude, String longitude) {
+    public ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude) {
 
         // check if the document exists in the db by calling getVirtualSensor(String userId, String sensorId) before calling this method
         DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
@@ -68,6 +69,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             // a unique id is generated
             document.put("userid", userId);
             document.put("sensorid", sensorId);
+            document.put("name", name);
             document.put("latitude", latitude);
             document.put("longitude", longitude);
             document.put("timecreated", timeCreated.toString());
@@ -99,6 +101,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
 
             updateFields.append("userid", virtualSensorData.getUserid());
             updateFields.append("sensorid", virtualSensorData.getSensorid());
+            updateFields.append("name", virtualSensorData.getName());
             updateFields.append("latitude", virtualSensorData.getLatitude());
             updateFields.append("longitude", virtualSensorData.getLongitude());
             updateFields.append("timecreated", virtualSensorData.getTimecreated());

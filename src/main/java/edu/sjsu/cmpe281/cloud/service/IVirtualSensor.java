@@ -14,7 +14,7 @@ public interface IVirtualSensor {
 
     void storeInDB(JSONObject vsJsonObject);
 
-    public ObjectId createSensor(String userId, String sensorId, String latitude, String longitude);
+    public ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude);
 
     List<VirtualSensor> getAllSensors();
 

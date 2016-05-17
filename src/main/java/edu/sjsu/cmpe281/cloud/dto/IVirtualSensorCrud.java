@@ -14,7 +14,7 @@ public interface IVirtualSensorCrud {
 
     void storeInDB(JSONObject virtualSensorData);
 
-    ObjectId createSensor(String userId, String sensorId, String latitude, String longitude);
+    ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude);
 
     @Deprecated
     List<VirtualSensor> getVirtualSensorListByUserId(String sensorId, String userId);

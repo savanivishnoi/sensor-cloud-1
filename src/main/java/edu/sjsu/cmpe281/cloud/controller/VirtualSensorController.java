@@ -86,7 +86,7 @@ public class VirtualSensorController {
 
             else {
                 ObjectId id = virtualSensorService.createSensor(virtualSensorData.getUserid(), virtualSensorData.getSensorid(),
-                        virtualSensorData.getLatitude(), virtualSensorData.getLongitude());
+                        virtualSensorData.getName(), virtualSensorData.getLatitude(), virtualSensorData.getLongitude());
                 if (id != null) {
                     JSONObject responseObject = new JSONObject();
                     responseObject.put("status", "201");
