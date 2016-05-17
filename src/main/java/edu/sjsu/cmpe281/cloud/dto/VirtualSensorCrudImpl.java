@@ -121,12 +121,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
     @Override
     public VirtualSensor getVirtualSensor(String userId, String sensorId) {
 
-//        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
-        /* Yassaman*/
-        MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-        DB db = mongoClient.getDB("cmpe281project");
-        DBCollection table = db.getCollection(MongoCollection.VirtualSensor.toString());
-        //////
+        DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
 
         BasicDBObject dbQuery = new BasicDBObject();
         List<BasicDBObject> query_parameters = new ArrayList<>();
