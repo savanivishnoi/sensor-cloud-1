@@ -22,9 +22,6 @@ sensorcloud.config([ '$routeProvider', '$locationProvider', function($routeProvi
     }).when('/billing', {
         templateUrl : 'projects/billing.html',
         controller : 'billingController'
-    }).when('/aboutus', {
-        templateUrl : 'projects/about.html',
-        controller : 'aboutController'
     }).when('/contactus', {
         templateUrl : 'projects/contact.html',
         controller : 'contactController'
@@ -52,15 +49,21 @@ sensorcloud.directive( 'goClick', function ( $location ) {
 });
 
 sensorcloud.controller('billingController', function($scope, $routeParams, $http) {
-
-});
-
-sensorcloud.controller('aboutController', function($scope, $routeParams, $http) {
-
+    var checkLogin = $http.get('/api/login');
+    checkLogin.success(function(data) {
+        if(data == 401) {
+            window.location = "#/login"
+        }
+    });
 });
 
 sensorcloud.controller('contactController', function($scope, $routeParams, $http) {
-
+    var checkLogin = $http.get('/api/login');
+    checkLogin.success(function(data) {
+        if(data == 401) {
+            window.location = "#/login"
+        }
+    });
 });
 
 sensorcloud.controller('defaultController', function($scope, $routeParams, $http) {
@@ -330,8 +333,8 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
     // {
     //     console.log("***** initialize");
     var mapProp = {
-        center:amsterdam2,
-        zoom:6,
+        center: amsterdam1,
+        zoom:5,
         zoomControl: true,
         mapTypeId:google.maps.MapTypeId.ROADMAP
     };
@@ -465,6 +468,13 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         }
     };
 
+    var checkLogin = $http.get('/api/login');
+    checkLogin.success(function(data) {
+        if(data == 401) {
+            window.location = "#/login"
+        }
+    });
+
     var userProfileResponse = $http.get('/api/profile');
     userProfileResponse.success(function(profile) {
         console.log(profile);
@@ -472,12 +482,22 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         loadSensors();
     });
 
+    $scope.logout = function() {
+        var logoutResponse = $http.get('/api/logout');
+        logoutResponse.success(function(data) {
+            if(data.status == 200) {
+                window.location = "#/login";
+            }
+        });
+    };
+    
     $scope.createNewSensor = function() {
         $scope.spinner = false;
         var postBody = {};
         postBody.latitude = $scope.latitude;
         postBody.longitude = $scope.longitude;
         postBody.userid = $scope.profile.userid;
+        postBody.name = $scope.name;
         $http({
             method : 'POST',
             url : '/api/sensor/create',

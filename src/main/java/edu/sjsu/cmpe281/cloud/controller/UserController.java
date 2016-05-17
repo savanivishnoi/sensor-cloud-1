@@ -151,6 +151,7 @@ public class UserController {
      * @param request
      * @return
      */
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
     public ResponseEntity doLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
