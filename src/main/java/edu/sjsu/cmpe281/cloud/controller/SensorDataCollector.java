@@ -1,20 +1,16 @@
 package edu.sjsu.cmpe281.cloud.controller;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.PropertyAccessor;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.sjsu.cmpe281.cloud.service.ICencoosConnect;
+import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
 import edu.sjsu.cmpe281.cloud.service.IMongoService;
-import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author Savani
@@ -23,68 +19,65 @@ import org.springframework.web.bind.annotation.RestController;
 
 @SuppressWarnings("ALL")
 @RestController
-@RequestMapping(value = "/sensor")
+@RequestMapping(value = "/api/sensor")
 public class SensorDataCollector {
 
     private static final Logger logger = LoggerFactory.getLogger(SensorDataCollector.class);
 
     @Autowired
-    ICencoosConnect cencoosConnect;
-
-    @Autowired
     IMongoService mongoService;
 
-    /**
-     * Update the backend (mongodb) by fetching data from CENCOOS website
-     *
-     * @param timestamp (required parameter) Date to fetch the data from CENCOOS server
-     * @return HttpStatus OK if data fetching process completes successfully, else HttpStatus BAD REQUEST
-     */
-    @RequestMapping(method = RequestMethod.GET, value = "/update/backend")
-    public ResponseEntity getCencoosData(@RequestParam(value = "timestamp", required = true) String timestamp) {
-        boolean fetchStatus = cencoosConnect.fetchData(timestamp);
-        if (fetchStatus)
-            return new ResponseEntity<>(HttpStatus.OK);
-        else
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-    }
 
     /**
-     * Fetch data from MongoDb database
+     * Fetch data from mongo db database
      *
-     * @param input values of sensor coordinates in format like <latitude,longitude>
-     * @return returns the sensor readings based on coordinates
+     * @param userId    user id
+     * @param sensorId  unique sensor id
+     * @param latitude  latitude of a sensor
+     * @param longitude longitude of a sensor
+     * @param startTime start time to fetch the data
+     * @param endTime   end time to fetch the data
+     * @return JSON list of sensor data
      */
-    @RequestMapping(method = RequestMethod.GET, value = "/fetch")
-    public ResponseEntity fetchData(@RequestParam(value = "latitude", required = false) String latitude,
-                                    @RequestParam(value = "longitude", required = false) String longitude) {
-
-        ObjectMapper objMap = new ObjectMapper();
-        objMap.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        JSONArray sensorReadings;
-
+    @RequestMapping(method = RequestMethod.GET, value = "/{user_id}/{sensor_id}/data")
+    public ResponseEntity fetchData(@RequestParam(value = "time1") String startTime,
+                                    @RequestParam(value = "time2") String endTime,
+                                    @PathVariable(value = "user_id")String userId,
+                                    @PathVariable(value = "sensor_id") String sensorId) {
+        List<BarometerSensor> sensorList;
         try {
-            if (latitude.isEmpty() && longitude.isEmpty()) {
-                sensorReadings = mongoService.searchAll(); //retrieve all results
-            } else {
-                sensorReadings = mongoService.search(latitude, longitude); //search on the basis of latitude & longitude
-            }
+            sensorList = mongoService.listSensorData(userId,sensorId,startTime, endTime);
+            logger.info("GET call on /sensor/data has been completed successfully.");
         } catch (Exception e) {
-            logger.error("Exception: "+e.getMessage());
+            logger.error("Exception: " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(sensorReadings.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(sensorList.toString(), HttpStatus.OK);
     }
-/*
-    @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity getReadingsByTimestamp(@RequestParam("timestamp") String timestamp) {
+
+    /**
+     * Check whether sensor coordinates exists in database or not.
+     *
+     * @param latitude  latitude of a sensor
+     * @param longitude longitude of a sensor
+     * @return true if sensor exist, else false.
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "/check")
+    public ResponseEntity checkData(@RequestParam(value = "latitude") String latitude,
+                                    @RequestParam(value = "longitude") String longitude) {
         try {
-            //test with this timestamp -> 2016-03-11T00:00:00Z
-            //BarometerSensor bs = mongoService.getBarometerSensorDataByTime(timestamp);
-            return new ResponseEntity<>(bs, HttpStatus.OK);
-        } catch (IllegalStateException e) {
-            logger.error("IllegalStateExecption: "+e.getMessage());
+            JSONObject responseObject = new JSONObject();
+            if (mongoService.checkSensors(latitude, longitude)) {
+                responseObject.put("status", "200");
+                responseObject.put("message", "coordinates exist");
+            } else {
+                responseObject.put("status", "400");
+                responseObject.put("message", "bad request");
+            }
+            return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("Exception: " + e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-    }*/
+    }
 }

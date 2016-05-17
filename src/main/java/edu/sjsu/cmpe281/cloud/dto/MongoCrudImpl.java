@@ -50,17 +50,31 @@ public class MongoCrudImpl implements IMongoCrud {
                 )
         );
 
-
+        logger.info("Executing getDataByTimeAndCoordinates crud method");
         Criteria resultantCriteria = new Criteria().andOperator(range, coordinates);
         Query query = new Query(resultantCriteria);
-
         return mongoOperations.find(query, BarometerSensor.class, MongoCollection.BarometerData.toString());
+    }
+
+    public boolean checkCoordinates(String latitude, String longitude) {
+        Criteria coordinates = (new Criteria()
+                .andOperator(
+                        Criteria.where("latitude").is(latitude),
+                        Criteria.where("longitude").is(longitude)
+                )
+        );
+        logger.info("Executing checkCoordinates crud method");
+        Query query = new Query(coordinates);
+        if (mongoOperations.exists(query, BarometerSensor.class, MongoCollection.BarometerData.toString()))
+            return true;
+        else
+            return false;
     }
 
     @Override
     public void updateDB(String barometerReadings) {
         JSONArray barometerReadingsArr = null;
-        List<DBObject> documents= new ArrayList<>();
+        List<DBObject> documents = new ArrayList<>();
         DBObject document;
         int totalChunks = 0;
         int remainingChunks = 0;
@@ -70,19 +84,19 @@ public class MongoCrudImpl implements IMongoCrud {
             barometerReadingsArr = new JSONArray(barometerReadings);
             logger.info("Updating Database... Please wait!");
             System.out.println("Adding " + barometerReadingsArr.length() + " entries to database");
-            totalChunks = barometerReadingsArr.length()/100;
-            remainingChunks = barometerReadingsArr.length()%100;
+            totalChunks = barometerReadingsArr.length() / 100;
+            remainingChunks = barometerReadingsArr.length() % 100;
             chunkIter = 0;
-            for(int j = 0; j< totalChunks; j++){
+            for (int j = 0; j < totalChunks; j++) {
                 for (int i = 0; i < 100; i++) {
-                    documents.add((DBObject)com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
+                    documents.add((DBObject) com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
                 }
                 table.insert(documents);
                 documents.clear();
-                System.out.println("deleted ... " +documents.size());
+                System.out.println("deleted ... " + documents.size());
             }
-            for(int i = 0; i < remainingChunks; i++){
-                documents.add((DBObject)com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
+            for (int i = 0; i < remainingChunks; i++) {
+                documents.add((DBObject) com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));
             }
             table.insert(documents);
             documents.clear();
@@ -106,6 +120,7 @@ public class MongoCrudImpl implements IMongoCrud {
         List<BasicDBObject> ls_srch = new ArrayList<BasicDBObject>();
         DBCollection table = mongoOperations.getCollection(MongoCollection.BarometerData.toString());
         DBCursor cursor1 = null;
+        logger.info("Executing search crud method");
         try {
             ls_srch.add(new BasicDBObject("latitude", latitude));
             ls_srch.add(new BasicDBObject("longitude", longitude));

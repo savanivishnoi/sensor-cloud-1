@@ -18,4 +18,6 @@ public interface IMongoCrud {
     JSONArray searchAll();
 
     List<BarometerSensor> getDataByTimeRangeAndCoordinates(String startTime, String endTime, String latitude, String longitude);
+
+    boolean checkCoordinates(String latitude, String longitude);
 }

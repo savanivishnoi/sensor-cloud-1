@@ -2,6 +2,7 @@ package edu.sjsu.cmpe281.cloud.service;
 
 import edu.sjsu.cmpe281.cloud.dto.IMongoCrud;
 import edu.sjsu.cmpe281.cloud.model.BarometerSensor;
+import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
 import org.json.JSONArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,9 @@ public class MongoServiceImpl implements IMongoService {
     @Autowired
     IMongoCrud mongoCrud;
 
+    @Autowired
+    IVirtualSensor virtualSensor;
+
     @Override
     public boolean updateDB(String barometerReadings) {
         try {
@@ -37,14 +41,14 @@ public class MongoServiceImpl implements IMongoService {
     }
 
     @Override
-    public List<BarometerSensor> listSensorData(String startTime, String endTime, String latitude, String longitude){
-            try{
-                return mongoCrud.getDataByTimeRangeAndCoordinates(startTime,endTime,latitude,longitude);
-            }
-            catch (UncategorizedMongoDbException e){
-                logger.error("UncategorizedMongoDbException: " + e.getMessage());
-                throw new IllegalStateException("MongoException occurred in MongoServiceImpl.listSensorData method");
-            }
+    public List<BarometerSensor> listSensorData(String userId, String sensorId, String startTime, String endTime) {
+        try {
+                VirtualSensor vs=virtualSensor.getVirtualSensor(userId,sensorId);
+                return mongoCrud.getDataByTimeRangeAndCoordinates(startTime,endTime,vs.getLatitude(),vs.getLongitude());
+        } catch (UncategorizedMongoDbException e) {
+            logger.error("UncategorizedMongoDbException: " + e.getMessage());
+            throw new IllegalStateException("MongoException occurred in MongoServiceImpl.listSensorData method");
+        }
     }
 
     @Override
@@ -54,6 +58,16 @@ public class MongoServiceImpl implements IMongoService {
         } catch (UncategorizedMongoDbException e) {
             logger.error("UncategorizedMongoDbException: " + e.getMessage());
             throw new IllegalStateException("MongoException occurred in MongoServiceImpl.search method");
+        }
+    }
+
+    @Override
+    public boolean checkSensors(String latitude, String longitude) {
+        try {
+            return mongoCrud.checkCoordinates(latitude, longitude);
+        } catch (UncategorizedMongoDbException e) {
+            logger.error("UncategorizedMongoDbException: " + e.getMessage());
+            throw new IllegalStateException("MongoException occurred in MongoServiceImpl.checkSensors method");
         }
     }
 
