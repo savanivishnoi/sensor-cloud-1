@@ -55,6 +55,26 @@ sensorcloud.controller('billingController', function($scope, $routeParams, $http
             window.location = "#/login"
         }
     });
+
+    var userProfileResponse = $http.get('/api/profile');
+    userProfileResponse.success(function(profile) {
+        console.log(profile);
+        $scope.profile = profile;
+        loadBilling();
+    });
+
+    var loadBilling = function() {
+        var billingDetailsResponse = $http.get('/api/sensor/' + $scope.profile.userid + '/pricing');
+        billingDetailsResponse.success(function(data) {
+            $scope.billing = data;
+            $scope.total_price = 0;
+            $scope.total_hours = 0;
+            data.forEach(function(bill) {
+                $scope.total_price += parseInt(bill.billing_hours) * 2;
+                $scope.total_hours += parseInt(bill.billing_hours);
+            });
+        });
+    }
 });
 
 sensorcloud.controller('contactController', function($scope, $routeParams, $http) {
@@ -543,6 +563,7 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
 });
 
 sensorcloud.controller('sensorController', function($scope, $routeParams, $http) {
+    $scope.spinner = true;
     var userProfileResponse = $http.get('/api/profile');
     userProfileResponse.success(function(profile) {
         console.log(profile);
@@ -559,6 +580,7 @@ sensorcloud.controller('sensorController', function($scope, $routeParams, $http)
     };
     
     $scope.fetchData = function() {
+        $scope.spinner = false;
         var time1 = new Date($scope.time1);
         var time2 = new Date($scope.time2);
         function generateChartData() {
@@ -642,6 +664,9 @@ sensorcloud.controller('sensorController', function($scope, $routeParams, $http)
                     "dateFormat": "YYYY-MM-DD HH:NN:SS"
                 }
             });
+
+            $scope.spinner = true;
+
             chart.addListener("dataUpdated", zoomChart);
                 // when we apply theme, the dataUpdated event is fired even before we add listener, so
                 // we need to call zoomChart here

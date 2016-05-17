@@ -40,7 +40,33 @@
             <div class="col-sm-9">
                 <div class="panel panel-default">
                     <div class="panel-body">
-                        <b style="color:grey"><h4>Sensor Dashboard</h4></b>
+                        <b style="color:grey"><h4>Billing Dashboard</h4></b>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr class = "info">
+                                    <th>#</th>
+                                    <th>Sensor Name</th>
+                                    <th>Billing Hours</th>
+                                    <th>Price</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class = "success" ng-repeat="bill in billing">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{bill.sensor_name}}</a></td>
+                                    <td>{{bill.billing_hours}} hours</td>
+                                    <td>$ {{bill.billing_hours * 2}}</td>
+                                </tr>
+                                <tr class = "success">
+                                    <td>##</td>
+                                    <td>All</a></td>
+                                    <td>{{total_hours}} hours</td>
+                                    <td>$ {{total_price}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
