@@ -93,7 +93,6 @@ public class MongoCrudImpl implements IMongoCrud {
                 }
                 table.insert(documents);
                 documents.clear();
-                System.out.println("deleted ... " + documents.size());
             }
             for (int i = 0; i < remainingChunks; i++) {
                 documents.add((DBObject) com.mongodb.util.JSON.parse(barometerReadingsArr.get(chunkIter++).toString()));

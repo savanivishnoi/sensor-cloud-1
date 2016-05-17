@@ -20,13 +20,14 @@ public class FetchScheduler {
     @Autowired
     ICencoosConnect connectURL;
 
-    @Scheduled(fixedRate = 1000*60*15)
+    @Scheduled(fixedRate = 1000*60*60*24)
     public void updateDatabasePeriodically() {
         try {
             // // TODO: 16-May-16 remove hardcode
-            boolean updatedDb = connectURL.fetchData("2016-04-27T00:00:00Z");
+           // boolean updatedDb = connectURL.fetchData("2016-05-17T00:00:00Z");
             logger.info("Scheduling task is running..");
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Exception in scheduler task: "+e.getMessage());
         }
     }
