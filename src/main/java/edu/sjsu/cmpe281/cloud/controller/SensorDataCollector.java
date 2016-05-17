@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,11 +63,11 @@ public class SensorDataCollector {
     @RequestMapping(method = RequestMethod.GET, value = "/{user_id}/{sensor_id}/data")
     public ResponseEntity fetchData(@RequestParam(value = "time1") String startTime,
                                     @RequestParam(value = "time2") String endTime,
-                                    @PathVariable(value = "user_id")String userId,
+                                    @PathVariable(value = "user_id") String userId,
                                     @PathVariable(value = "sensor_id") String sensorId) {
         List<BarometerSensor> sensorList;
         try {
-            sensorList = mongoService.listSensorData(userId,sensorId,startTime, endTime);
+            sensorList = mongoService.listSensorData(userId, sensorId, startTime, endTime);
             logger.info("GET call on /sensor/data has been completed successfully.");
         } catch (Exception e) {
             logger.error("Exception: " + e.getMessage());
@@ -104,37 +103,40 @@ public class SensorDataCollector {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/{user_id}/pricing")
-    public ResponseEntity fetchPricing(@PathVariable(value = "user_id") String userId){
-         JSONArray responseObject = new JSONArray();
-        JSONObject jsonObject =  new JSONObject();
+    public ResponseEntity fetchPricing(@PathVariable(value = "user_id") String userId) {
+        JSONArray responseObject = new JSONArray();
+        JSONObject jsonObject;
         VirtualSensorCrudImpl vs = new VirtualSensorCrudImpl();
         List<VirtualSensor> virtualSensorsList = virtualSensor.getVirtualSensorListByUserId(userId);
-        if(virtualSensorsList.size() == 0){ return new ResponseEntity("No sensors.",HttpStatus.BAD_REQUEST); }
+        if (virtualSensorsList.size() == 0) {
+            return new ResponseEntity("No sensors.", HttpStatus.BAD_REQUEST);
+        }
         Double price = 0.0;
         String timeCreated = null;
         String timeUpdated = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy HH:mm:ss a");
+        SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         long diff;
+        double hours = 0;
         try {
-        for(int i = 0 ; i < virtualSensorsList.size(); i++){
-
-            timeCreated = ( virtualSensorsList.get(i).getTimecreated());
-            timeUpdated = (virtualSensorsList.get(i).getTimeupdated());
-           // diff = timeUpdated - timeCreated;
-            Date date1 = formatter.parse(timeCreated);
-            Date date2 = formatter.parse(timeUpdated);
-            diff = date2.getTime() - date1.getTime();
-                jsonObject.put("sensorid", virtualSensorsList.get(i).getId());
-                jsonObject.put("totaltime", diff);
+            for (int i = 0; i < virtualSensorsList.size(); i++) {
+                jsonObject= new JSONObject();
+                timeCreated = (virtualSensorsList.get(i).getTimecreated());
+                timeUpdated = (virtualSensorsList.get(i).getTimeupdated());
+                Date date1 = formatter.parse(timeCreated);
+                Date date2 = formatter.parse(timeUpdated);
+                diff = date2.getTime() - date1.getTime();
+                hours = diff / (60 * 60 * 1000);
+                jsonObject.put("sensor_name", virtualSensorsList.get(i).getName());
+                jsonObject.put("billing_hours", hours);
+                responseObject.put(jsonObject);
             }
-            responseObject.put(jsonObject);
+
             //price =  price + 0.01 * diff;
-      }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return  new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
     }
 }
