@@ -16,9 +16,18 @@ sensorcloud.config([ '$routeProvider', '$locationProvider', function($routeProvi
     }).when('/home', {
         templateUrl : 'projects/home.html',
         controller : 'homeController'
-    }).when('/home/sensors', {
+    }).when('/home/sensors/:sensorid', {
         templateUrl : 'projects/sensor.html',
         controller : 'sensorController'
+    }).when('/billing', {
+        templateUrl : 'projects/billing.html',
+        controller : 'billingController'
+    }).when('/aboutus', {
+        templateUrl : 'projects/about.html',
+        controller : 'aboutController'
+    }).when('/contactus', {
+        templateUrl : 'projects/contact.html',
+        controller : 'contactController'
     }).otherwise({
         redirectTo : '/'
     });
@@ -40,6 +49,18 @@ sensorcloud.directive( 'goClick', function ( $location ) {
             });
         });
     };
+});
+
+sensorcloud.controller('billingController', function($scope, $routeParams, $http) {
+
+});
+
+sensorcloud.controller('aboutController', function($scope, $routeParams, $http) {
+
+});
+
+sensorcloud.controller('contactController', function($scope, $routeParams, $http) {
+
 });
 
 sensorcloud.controller('defaultController', function($scope, $routeParams, $http) {
@@ -296,60 +317,108 @@ sensorcloud.controller('signupController', function($scope, $routeParams, $http)
 });
 
 sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
+    $scope.spinner = true;
     console.log("***** controller");
      var amsterdam1=new google.maps.LatLng(40.293210, -121.939071);
      var amsterdam2=new google.maps.LatLng(36.8502863, -119.8259927);
      var amsterdam3=new google.maps.LatLng(33.7648594, -116.1897527);
 
+    var homeMapDiv = document.getElementById("googleMap");
     var mapDiv = document.getElementById("googleMap2");
 
     // function initialize()
     // {
     //     console.log("***** initialize");
-        var mapProp = {
-            center:amsterdam2,
-            zoom:5,
-            zoomControl: true,
-            mapTypeId:google.maps.MapTypeId.ROADMAP
-        };
-        var map = new google.maps.Map(mapDiv,mapProp);
+    var mapProp = {
+        center:amsterdam2,
+        zoom:6,
+        zoomControl: true,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    var homeMapProp = {
+        center:amsterdam2,
+        zoom:6,
+        zoomControl: true,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+    };
+
+    var map = new google.maps.Map(mapDiv, mapProp);
+    var homeMap = new google.maps.Map(homeMapDiv, homeMapProp);
 
     $("#myModal").on("shown.bs.modal", function () {
         google.maps.event.trigger(map, "resize");
     });
 
-        var myCity1 = new google.maps.Circle({
-            map: map,
-            center:amsterdam1,
-            radius:210000,
-            strokeColor:"#0000FF",
-            strokeOpacity:0.8,
-            strokeWeight:2,
-            fillColor:"#0000FF",
-            fillOpacity:0.4
-        });
+    var myCity1 = new google.maps.Circle({
+        map: map,
+        center:amsterdam1,
+        radius:210000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#0000FF",
+        fillOpacity:0.4
+    });
 
-        var myCity2 = new google.maps.Circle({
-            map: map,
-            center:amsterdam2,
-            radius:240000,
-            strokeColor:"#0000FF",
-            strokeOpacity:0.8,
-            strokeWeight:2,
-            fillColor:"#0000FF",
-            fillOpacity:0.4
-        });
+    var myCity2 = new google.maps.Circle({
+        map: map,
+        center:amsterdam2,
+        radius:240000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#0000FF",
+        fillOpacity:0.4
+    });
 
-        var myCity3 = new google.maps.Circle({
-            map: map,
-            center:amsterdam3,
-            radius:270000,
-            strokeColor:"#0000FF",
-            strokeOpacity:0.8,
-            strokeWeight:2,
-            fillColor:"#0000FF",
-            fillOpacity:0.4
-        });
+    var myCity3 = new google.maps.Circle({
+        map: map,
+        center:amsterdam3,
+        radius:270000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#0000FF",
+        fillOpacity:0.4
+    });
+
+    var mycityHome1 = new google.maps.Circle({
+        map: map,
+        center:amsterdam1,
+        radius:210000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#9574b6",
+        fillOpacity:0.4
+    });
+
+    var mycityHome2 = new google.maps.Circle({
+        map: map,
+        center:amsterdam2,
+        radius:240000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#9574b6",
+        fillOpacity:0.4
+    });
+
+    var mycityHome3 = new google.maps.Circle({
+        map: map,
+        center:amsterdam3,
+        radius:270000,
+        strokeColor:"#0000FF",
+        strokeOpacity:0.8,
+        strokeWeight:2,
+        fillColor:"#9574b6",
+        fillOpacity:0.4
+    });
+
+    mycityHome1.setMap(homeMap);
+    mycityHome2.setMap(homeMap);
+    mycityHome3.setMap(homeMap);
 
     var marker = new google.maps.Marker({
         map: map,
@@ -359,15 +428,27 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
     });
 
     google.maps.event.addListener(myCity1, 'click', function (event) {
+        $scope.latitude = "";
+        $scope.longitude = "";
         marker.setPosition(event.latLng);
+        $scope.latitude = marker.getPosition().lat();
+        $scope.longitude = marker.getPosition().lng();
     });
 
     google.maps.event.addListener(myCity2, 'click', function (event) {
+        $scope.latitude = "";
+        $scope.longitude = "";
         marker.setPosition(event.latLng);
+        $scope.latitude = marker.getPosition().lat();
+        $scope.longitude = marker.getPosition().lng();
     });
 
     google.maps.event.addListener(myCity3, 'click', function (event) {
+        $scope.latitude = "";
+        $scope.longitude = "";
         marker.setPosition(event.latLng);
+        $scope.latitude = marker.getPosition().lat();
+        $scope.longitude = marker.getPosition().lng();
     });
 
     // TODO - add the functionality for drag events
@@ -376,6 +457,67 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
     // }
 
     // google.maps.event.addaddDomListener(mapDiv, 'load', initialize);
+
+    $scope.changeLatLng = function() {
+        if($scope.longitude !== null && $scope.latitude !== null) {
+            var myLatlng = new google.maps.LatLng($scope.latitude, $scope.longitude);
+            marker.setPosition(myLatlng);
+        }
+    };
+
+    var userProfileResponse = $http.get('/api/profile');
+    userProfileResponse.success(function(profile) {
+        console.log(profile);
+        $scope.profile = profile;
+        loadSensors();
+    });
+
+    $scope.createNewSensor = function() {
+        $scope.spinner = false;
+        var postBody = {};
+        postBody.latitude = $scope.latitude;
+        postBody.longitude = $scope.longitude;
+        postBody.userid = $scope.profile.userid;
+        $http({
+            method : 'POST',
+            url : '/api/sensor/create',
+            data : postBody,
+            headers : {
+                'Content-Type' : 'application/json'
+            }
+        }).success(function(data) {
+            console.log(data);
+            $scope.spinner = true;
+            if(data.status == 201) {
+                $('#myModal').modal('hide');
+                window.location = "#/home";
+            }
+            else {
+                $scope.spinner = true;
+                $scope.errmsg = data.message;
+            }
+        });
+    };
+
+    $scope.hideSensorTable = true;
+    var sensorMarkers = [];
+    var loadSensors = function() {
+        var loadMySensors = $http.get('api/sensor/' + $scope.profile.userid);
+        loadMySensors.success(function(data) {
+            console.log(data);
+            $scope.sensors = data;
+            $scope.hideSensorTable = false;
+            $scope.sensors.forEach(function(sensor) {
+                var myCenter=new google.maps.LatLng(sensor.latitude, sensor.longitude);
+                var mymarker=new google.maps.Marker({
+                    position: myCenter,
+                    animation:google.maps.Animation.BOUNCE
+                });
+                mymarker.setMap(homeMap);
+                sensorMarkers.push(mymarker);
+            });
+        });
+    }
 });
 
 sensorcloud.controller('sensorController', function($scope, $routeParams, $http) {
