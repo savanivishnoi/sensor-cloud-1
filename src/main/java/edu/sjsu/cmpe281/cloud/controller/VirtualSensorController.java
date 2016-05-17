@@ -72,19 +72,19 @@ public class VirtualSensorController {
     public ResponseEntity createSensor(@RequestBody VirtualSensor virtualSensorData) {
         try {
 
-            // check if the record exists in db
-            VirtualSensor vs = virtualSensorService.getVirtualSensor(virtualSensorData.getUserid(), virtualSensorData.getSensorid());
-            if (vs != null) {
-                virtualSensorService.updateVirtualSensor(virtualSensorData);
-                JSONObject responseObject = new JSONObject();
-                responseObject.put("status", "200");
-                responseObject.put("message", "Virtual sensor was updated successfully");
-                responseObject.put("userId", virtualSensorData.getUserid());
-                responseObject.put("sensorId", virtualSensorData.getSensorid());
-                return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
-            }
+//            // check if the record exists in db
+//            VirtualSensor vs = virtualSensorService.getVirtualSensor(virtualSensorData.getUserid(), virtualSensorData.getSensorid());
+//            if (vs != null) {
+//                virtualSensorService.updateVirtualSensor(virtualSensorData);
+//                JSONObject responseObject = new JSONObject();
+//                responseObject.put("status", "200");
+//                responseObject.put("message", "Virtual sensor was updated successfully");
+//                responseObject.put("userId", virtualSensorData.getUserid());
+//                responseObject.put("sensorId", virtualSensorData.getSensorid());
+//                return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
+//            }
 
-            else {
+//            else {
                 ObjectId id = virtualSensorService.createSensor(virtualSensorData.getUserid(), virtualSensorData.getSensorid(),
                         virtualSensorData.getName(), virtualSensorData.getLatitude(), virtualSensorData.getLongitude());
                 if (id != null) {
@@ -98,7 +98,7 @@ public class VirtualSensorController {
                             " - sensorId: " + virtualSensorData.getSensorid(),
                             HttpStatus.BAD_REQUEST);
                 }
-            }
+//            }
         }
         catch (JSONException e) {
             logger.error("Exception: "+e.getMessage());
@@ -110,19 +110,19 @@ public class VirtualSensorController {
             public ResponseEntity deleteSensor(@RequestParam(value = "userid", required = true) String userId,
                                                @RequestParam(value = "sensorid", required = true) String sensorId) {
         try {
-            VirtualSensor vs = virtualSensorService.getVirtualSensor(userId, sensorId);
-            if(vs != null) {
+//            VirtualSensor vs = virtualSensorService.getVirtualSensor(userId, sensorId);
+//            if(vs != null) {
                 virtualSensorService.deleteVirtualSensor(userId, sensorId);
                 JSONObject responseObject = new JSONObject();
                 responseObject.put("status","202");
                 responseObject.put("message", "Virtual sensor was marked for deletion successfully");
-                responseObject.put("Virtual Sensor: ", vs.toString());
+                responseObject.put("Virtual Sensor: ", sensorId);
                 return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
-            }
-            else {
-                logger.error("Unable to delete. User with id " + userId + " and sensorId " + sensorId + " not found");
-                return new ResponseEntity<>("deletion failed " + userId + " - " + userId, HttpStatus.NOT_FOUND);
-            }
+//            }
+//            else {
+//                logger.error("Unable to delete. User with id " + userId + " and sensorId " + sensorId + " not found");
+//                return new ResponseEntity<>("deletion failed " + userId + " - " + userId, HttpStatus.NOT_FOUND);
+//            }
         }
         catch (JSONException e) {
             logger.error("Exception: "+e.getMessage());
