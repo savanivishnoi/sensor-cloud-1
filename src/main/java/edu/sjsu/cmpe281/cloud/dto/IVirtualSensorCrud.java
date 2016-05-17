@@ -11,10 +11,10 @@ import java.util.List;
  */
 public interface IVirtualSensorCrud {
 
-
+    @Deprecated
     void storeInDB(JSONObject virtualSensorData);
 
-    ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude);
+    ObjectId createSensor(String userId, String name, String latitude, String longitude);
 
     @Deprecated
     List<VirtualSensor> getVirtualSensorListByUserId(String sensorId, String userId);

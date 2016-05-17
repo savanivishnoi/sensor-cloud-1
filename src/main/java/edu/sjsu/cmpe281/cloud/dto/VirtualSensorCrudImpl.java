@@ -2,6 +2,7 @@ package edu.sjsu.cmpe281.cloud.dto;
 
 import com.google.gson.Gson;
 import com.mongodb.*;
+import com.mongodb.util.JSON;
 import edu.sjsu.cmpe281.cloud.enums.MongoCollection;
 import edu.sjsu.cmpe281.cloud.enums.SensorState;
 import edu.sjsu.cmpe281.cloud.model.VirtualSensor;
@@ -39,7 +40,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
 
             // a unique id is generated
             document.put("userid", virtualSensorData.get("userid"));
-            document.put("sensorid", virtualSensorData.get("sensorid"));
+//            document.put("sensorid", virtualSensorData.get("sensorid"));
             document.put("name", virtualSensorData.get("name"));
             document.put("latitude", virtualSensorData.get("latitude"));
             document.put("longitude", virtualSensorData.get("longitude"));
@@ -54,13 +55,18 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
     }
 
     @Override
-    public ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude) {
+    public ObjectId createSensor(String userId, String name, String latitude, String longitude) {
 
         // check if the document exists in the db by calling getVirtualSensor(String userId, String sensorId) before calling this method
         DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
 
         // should I check if the document exists in the collection?
         BasicDBObject document = new BasicDBObject();
+
+        BasicDBObject updateFields = new BasicDBObject();
+        BasicDBObject searchQuery = new BasicDBObject();
+        BasicDBObject setQuery = new BasicDBObject();
+
         ObjectId id= null;
 
         try {
@@ -68,7 +74,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
 
             // a unique id is generated
             document.put("userid", userId);
-            document.put("sensorid", sensorId);
+//            document.put("sensorid", sensorId);
             document.put("name", name);
             document.put("latitude", latitude);
             document.put("longitude", longitude);
@@ -77,7 +83,15 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             document.put("state", SensorState.RUNNING.toString());
 
             table.insert(document);
+
             id = (ObjectId)document.get( "_id" );
+
+            // update id
+            searchQuery.append("_id",id);
+            updateFields.append("id", id.toString());
+            setQuery.append("$set", updateFields);
+            table.update(searchQuery, setQuery);
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -95,12 +109,12 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
 
         try {
             searchQuery.append("userid", virtualSensorData.getUserid())
-                    .append("sensorid", virtualSensorData.getSensorid());
+                    .append("id", virtualSensorData.getId());
 
             Date timeUpdated = new Date();
 
             updateFields.append("userid", virtualSensorData.getUserid());
-            updateFields.append("sensorid", virtualSensorData.getSensorid());
+            updateFields.append("id", virtualSensorData.getId());
             updateFields.append("name", virtualSensorData.getName());
             updateFields.append("latitude", virtualSensorData.getLatitude());
             updateFields.append("longitude", virtualSensorData.getLongitude());
@@ -132,7 +146,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         try {
 
             query_parameters.add(new BasicDBObject("userid", userId));
-            query_parameters.add(new BasicDBObject("sensorid", sensorId));
+            query_parameters.add(new BasicDBObject("id", sensorId));
             dbQuery.put("$and", query_parameters);
 
             dbCursor= table.find(dbQuery);
@@ -151,6 +165,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
     public List<VirtualSensor> getVirtualSensorListByUserId(String userId) {
 
         DBCollection table = mongoOperations.getCollection(MongoCollection.VirtualSensor.toString());
+
         Gson gson = new Gson();
         List<VirtualSensor> virtualSensorList = new ArrayList<>();
 
@@ -184,7 +199,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         try {
 
             query_parameters.add(new BasicDBObject("userid", userId));
-            query_parameters.add(new BasicDBObject("sensorid", sensorId));
+            query_parameters.add(new BasicDBObject("id", sensorId));
             dbQuery.put("$and", query_parameters);
 
             table.remove(dbQuery);
@@ -208,7 +223,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
         try {
 
             query_parameters.add(new BasicDBObject("userid", userId));
-            query_parameters.add(new BasicDBObject("sensorid", sensorId));
+            query_parameters.add(new BasicDBObject("id", sensorId));
             dbQuery.put("$and", query_parameters);
 
             // execute the search query
@@ -302,7 +317,7 @@ public class VirtualSensorCrudImpl implements IVirtualSensorCrud {
             BasicDBObject newDocument = new BasicDBObject();
             newDocument.append("$set", new BasicDBObject().append("state", state));
 
-            BasicDBObject searchQuery = new BasicDBObject().append("userid", userId).append("sensorid", sensorId);
+            BasicDBObject searchQuery = new BasicDBObject().append("userid", userId).append("id", sensorId);
 
             table.update(searchQuery, newDocument);
         } catch (Exception e) {

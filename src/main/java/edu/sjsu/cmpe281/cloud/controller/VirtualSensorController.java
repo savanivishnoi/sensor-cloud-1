@@ -40,8 +40,6 @@ public class VirtualSensorController {
 
         Gson gson = new Gson();
         try {
-
-            String vsensorstr= gson.toJson(virtualSensorService.getVirtualSensorListByUserId(userId).toString());
             userSensors = new JSONArray(gson.toJson(virtualSensorService.getVirtualSensorListByUserId(userId)));
         } catch (Exception e) {
             logger.error("Exception: "+e.getMessage());
@@ -85,7 +83,7 @@ public class VirtualSensorController {
 //            }
 
 //            else {
-                ObjectId id = virtualSensorService.createSensor(virtualSensorData.getUserid(), virtualSensorData.getSensorid(),
+                ObjectId id = virtualSensorService.createSensor(virtualSensorData.getUserid(),
                         virtualSensorData.getName(), virtualSensorData.getLatitude(), virtualSensorData.getLongitude());
                 if (id != null) {
                     JSONObject responseObject = new JSONObject();
@@ -95,7 +93,7 @@ public class VirtualSensorController {
                     return new ResponseEntity<>(responseObject.toString(), HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>("creation failed userId: " + virtualSensorData.getUserid() +
-                            " - sensorId: " + virtualSensorData.getSensorid(),
+                            " - sensorId: " + virtualSensorData.getId(),
                             HttpStatus.BAD_REQUEST);
                 }
 //            }
@@ -134,7 +132,7 @@ public class VirtualSensorController {
     public ResponseEntity updateSensor(@PathVariable("userid") String userId,
                                        @RequestBody VirtualSensor virtualSensorData) {
         try {
-            String sensorId= virtualSensorData.getSensorid();
+            String sensorId= virtualSensorData.getId();
             VirtualSensor vs = virtualSensorService.getVirtualSensor(userId, sensorId);
             if(vs != null) {
                 virtualSensorService.updateVirtualSensor(virtualSensorData);

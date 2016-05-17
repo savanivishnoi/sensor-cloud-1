@@ -13,7 +13,7 @@ public class VirtualSensor implements Serializable{
 
     @Id
     private String id;
-    private String sensorid;
+//    private String sensorid;
     private String userid;
     private String name;
     private String latitude;
@@ -27,13 +27,13 @@ public class VirtualSensor implements Serializable{
         super();
     }
 
-    public VirtualSensor(String id, String sensorId, String userId, String name, String latitude, String longitude) {
+    public VirtualSensor(String id, String userId, String name, String latitude, String longitude) {
         super();
 
         Date currentDate = new Date();
 
         this.id = id;
-        this.sensorid = sensorId;
+//        this.sensorid = sensorId;
         this.userid = userId;
         this.name= name;
         this.latitude = latitude;
@@ -43,11 +43,11 @@ public class VirtualSensor implements Serializable{
         this.state = SensorState.RUNNING;
     }
 
-    public VirtualSensor(String id, String sensorId, String userId, String name, String latitude, String longitude, String timeCreated,
+    public VirtualSensor(String id, String userId, String name, String latitude, String longitude, String timeCreated,
                          String timeUpdated, SensorState state) {
         super();
         this.id = id;
-        this.sensorid = sensorId;
+//        this.sensorid = sensorId;
         this.userid = userId;
         this.name= name;
         this.latitude = latitude;
@@ -65,13 +65,13 @@ public class VirtualSensor implements Serializable{
         this.id = id;
     }
 
-    public String getSensorid() {
-        return sensorid;
-    }
-
-    public void setSensorid(String sensorid) {
-        this.sensorid = sensorid;
-    }
+//    public String getSensorid() {
+//        return sensorid;
+//    }
+//
+//    public void setSensorid(String sensorid) {
+//        this.sensorid = sensorid;
+//    }
 
     public String getUserid() {
         return userid;
@@ -127,7 +127,7 @@ public class VirtualSensor implements Serializable{
 
     public String toString() {
 
-        return "VirtualSensor [ id=" + id + ", sensorid= " + sensorid + ", userid= " + userid + ", name= " + name +
+        return "VirtualSensor [ id= " + id + ", userid= " + userid + ", name= " + name +
                 ", latitude= " + latitude + ", longitude= " + longitude +
                 ", timecreated= " + timecreated + ", timeupdated= " + timeupdated +
                 ", state= " + state.toString() + "]";

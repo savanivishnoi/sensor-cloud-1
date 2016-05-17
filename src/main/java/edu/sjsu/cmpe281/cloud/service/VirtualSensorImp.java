@@ -65,8 +65,8 @@ public class VirtualSensorImp implements IVirtualSensor {
     }
 
     @Override
-    public ObjectId createSensor(String userId, String sensorId, String name, String latitude, String longitude) {
-        return vsDBOperations.createSensor(userId, sensorId, name, latitude, longitude);
+    public ObjectId createSensor(String userId, String name, String latitude, String longitude) {
+        return vsDBOperations.createSensor(userId, name, latitude, longitude);
     }
 
     @Override
