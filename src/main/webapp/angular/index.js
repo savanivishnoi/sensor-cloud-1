@@ -525,8 +525,10 @@ sensorcloud.controller('homeController', function($scope, $routeParams, $http) {
         var loadMySensors = $http.get('api/sensor/' + $scope.profile.userid);
         loadMySensors.success(function(data) {
             console.log(data);
+            if(data.length != 0) {
+                $scope.hideSensorTable = false;
+            }
             $scope.sensors = data;
-            $scope.hideSensorTable = false;
             $scope.sensors.forEach(function(sensor) {
                 var myCenter=new google.maps.LatLng(sensor.latitude, sensor.longitude);
                 var mymarker=new google.maps.Marker({
@@ -563,9 +565,14 @@ sensorcloud.controller('sensorController', function($scope, $routeParams, $http)
             var chartData = [];
             var firstDate = new Date($scope.time1);
             firstDate.setMinutes(firstDate.getDate() - 1000);
+            var time3 = new Date();
+            if(time2 > time3)
+            {
+                time2 = time3;
+            }
             var diff = time2 - time1;
             var max = 1100;
-            var min = 940;
+            var min = 1050;
             console.log((diff/(60*60*1000))*4);
             var newDate = new Date(firstDate);
             for (var i = 0; i < (diff/(60*60*1000))*4; i++) {
